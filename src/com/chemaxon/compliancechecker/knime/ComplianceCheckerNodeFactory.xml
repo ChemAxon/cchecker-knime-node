@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./logo.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>ComplianceChecker</name>
+    
+    <shortDescription>
+        
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>This node checks all chemical structures provided in a given column of the input DataTable against ComplianceChecker's rule set.<br/>
+        Source code is available <a href="https://github.com/ChemAxon/cchecker-knime-node">here</a>.
+        </intro>
+        
+        <!-- possibly more options that can also be grouped by tabs -->
+        <tab name="Options">
+        	<option name="Check mode">In 'simple' mode input rows are directed to different output ports based on the result of the check. In 'detailed' mode additional info columns are added to the input rows directed to the output ports.</option>
+        	<option name="Structure column">The column of the input DataTable that holds the structures to be checked.</option>
+        	<option name="Date of regulation">Setting this date will execute the checks against the regulations that were active on the chosen date. Not setting the field is equivalent with setting today's date.</option>
+        	<option name="Categories">The check will run against the selected categories. No selection means, running checks against all categories.</option>
+        </tab>
+        <tab name="Connection settings">
+        	<option name="Host">The host machine for ComplianceChecker.</option>
+        	<option name="Timeout">Sets read and connection timeout for the checks.</option>
+        	<option name="Username">Name of the user to authenticate against on the service calls.</option>
+        	<option name="Password">Password to authenticate against on the service calls.</option>
+        </tab>
+    </fullDescription>
+    
+    <ports>
+        <inPort index="0" name="Input data">DataTable containing the input structures that will be checked</inPort>
+        <!-- possibly more input ports here-->
+        <outPort index="0" name="Controlled">Regulated records</outPort>
+        <outPort index="1" name="Not controlled">Not regulated records</outPort>
+        <outPort index="2" name="Error">Records that could not be checked due to error</outPort>
+        <!-- possibly more output ports here-->
+    </ports>    
+    <!--views>
+        <view index="0" name="name of first view">Description of first view...</view>
+        <view index="1" name="name of second view">Description of second view...</view>
+    </views-->
+</knimeNode>
