@@ -25,8 +25,6 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
-import com.chemaxon.compliancechecker.knime.rest.CCDbInitializationDateInvoker;
-import com.chemaxon.compliancechecker.knime.rest.ConnectionSettings;
 import com.chemaxon.compliancechecker.knime.rest.RestConnectionDetails;
 
 public class ConnectionSettingsTabFields implements RestConnectionDetails {
@@ -92,17 +90,5 @@ public class ConnectionSettingsTabFields implements RestConnectionDetails {
         m_timeout.validateSettings(settings);
         m_host.validateSettings(settings);
         m_username.validateSettings(settings);
-        validateConnectionDetails(settings);
-    }
-    
-    // validate connection settings by invoking a service 
-    private void validateConnectionDetails(NodeSettingsRO settings) throws InvalidSettingsException {
-        ConnectionSettings conectionSettings = new ConnectionSettings(settings);
-        try {
-            new CCDbInitializationDateInvoker(conectionSettings).getDbInitializationDate();  
-        } catch (Exception e) {
-            throw new InvalidSettingsException("Failed to connect to Compliance Checker. "
-                    + "Please check if connection settings are correct.");
-        }
     }
 }

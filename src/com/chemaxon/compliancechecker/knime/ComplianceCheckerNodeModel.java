@@ -44,6 +44,7 @@ import com.chemaxon.compliancechecker.knime.datahandlers.CheckResultSpecProvider
 import com.chemaxon.compliancechecker.knime.datahandlers.CheckResultSpecProviderFactory;
 import com.chemaxon.compliancechecker.knime.dto.CheckListRequest;
 import com.chemaxon.compliancechecker.knime.helpers.CategoryHelper;
+import com.chemaxon.compliancechecker.knime.rest.CCDbInitializationDateInvoker;
 import com.chemaxon.compliancechecker.knime.tabs.ConnectionSettingsTabFields;
 import com.chemaxon.compliancechecker.knime.tabs.OptionsTabFields;
 import com.chemaxon.compliancechecker.knime.types.CheckResultType;
@@ -147,9 +148,7 @@ public class ComplianceCheckerNodeModel extends NodeModel {
             throws InvalidSettingsException {
         DataTableSpec inputTableSpec = inSpecs[0];
 
-        if (connectionFields.getHost().isEmpty()) {
-            throw new InvalidSettingsException("No connection settings are provided.");    
-        }
+        validateConnectionDetails();
 
         CheckResultSpecProvider checkResultSpecProvider =
                 new CheckResultSpecProviderFactory(inputTableSpec)
@@ -160,6 +159,21 @@ public class ComplianceCheckerNodeModel extends NodeModel {
                 outputDataTableSpecMap.get(CheckResultType.CONTROLLED),
                 outputDataTableSpecMap.get(CheckResultType.NOT_CONTROLLED),
                 outputDataTableSpecMap.get(CheckResultType.ERROR)};
+    }
+
+    private void validateConnectionDetails() throws InvalidSettingsException {
+    	
+        if (connectionFields.getHost().isEmpty()) {
+            throw new InvalidSettingsException("No connection settings are provided.");    
+        }
+
+    	try {
+    	    // validate connection settings by invoking a service
+            new CCDbInitializationDateInvoker(connectionFields).getDbInitializationDate();  
+        } catch (Exception e) {
+            setWarningMessage("Failed to connect to Compliance Checker. "
+                    + "Please check if connection settings are correct.");
+        }
     }
 
     /**
