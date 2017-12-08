@@ -19,21 +19,28 @@
 
 package com.chemaxon.compliancechecker.knime.rest;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.IOException;
 import java.net.Authenticator;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.ws.rs.core.MediaType;
 
+import com.chemaxon.compliancechecker.knime.ssl.CcTrustManager;
+import com.chemaxon.compliancechecker.knime.ssl.SSLContextException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.core.util.Base64;
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
  
 public class CCRestInvoker {
     
@@ -133,7 +140,7 @@ public class CCRestInvoker {
 
     private WebResource createWebResource() {
         Authenticator.setDefault(null);
-        Client client = Client.create();
+		Client client = getClient();
         int timeout = connectionDetails.getTimeout();
         client.addFilter(new HTTPBasicAuthFilter(connectionDetails.getUsername(), connectionDetails.getPassword()));
         client.setConnectTimeout(timeout);
@@ -141,8 +148,23 @@ public class CCRestInvoker {
         return client.resource(connectionDetails.getHost() + urlPath);
     }
     
-    public String getEncodedAuthorizationString() {
-        return "Basic " + new String(
-                Base64.encode(connectionDetails.getUsername() + ":" + connectionDetails.getPassword()), UTF_8);
+    private Client getClient() {
+    	if (connectionDetails.getHost().startsWith("https://")) {
+    		return Client.create(getClientConfig());
+    	}
+    	return Client.create();
+    }
+    
+    private ClientConfig getClientConfig() {
+        ClientConfig config = new DefaultClientConfig();
+        try {
+			SSLContext ctx = SSLContext.getInstance("SSL");
+			ctx.init(null, new TrustManager[]{new CcTrustManager()}, null);
+	        HostnameVerifier hv = (urlHostname, sslSession) -> true;
+	        config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(hv, ctx));
+		} catch (NoSuchAlgorithmException | KeyManagementException e) {
+			throw new SSLContextException("Failed to create SSL Context", e);
+		}
+        return config;
     }
 }
