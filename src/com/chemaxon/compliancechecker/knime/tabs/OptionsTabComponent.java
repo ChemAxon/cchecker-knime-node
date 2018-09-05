@@ -33,6 +33,7 @@ import org.knime.core.node.defaultnodesettings.DialogComponentButton;
 import org.knime.core.node.defaultnodesettings.DialogComponentButtonGroup;
 import org.knime.core.node.defaultnodesettings.DialogComponentColumnNameSelection;
 import org.knime.core.node.defaultnodesettings.DialogComponentLabel;
+import org.knime.core.node.defaultnodesettings.DialogComponentString;
 import org.knime.core.node.defaultnodesettings.DialogComponentStringListSelection;
 import org.knime.core.node.defaultnodesettings.SettingsModelColumnName;
 import org.knime.core.node.defaultnodesettings.SettingsModelDate;
@@ -62,6 +63,8 @@ public class OptionsTabComponent {
     
     private final SettingsModelStringArray m_categories =
             new SettingsModelStringArray(OptionsTabFields.CFGKEY_CATEGORIES, new String[] {});
+    
+    private final SettingsModelString m_molFormat = new SettingsModelString(OptionsTabFields.CFGKEY_MOL_FORMAT, "");
     
     private DialogComponentStringListSelection categorySelectionComponent;
 
@@ -94,6 +97,8 @@ public class OptionsTabComponent {
         
         pane.addDialogComponent(loadButton);
         pane.addDialogComponent(categorySelectionComponent);
+        
+        pane.addDialogComponent(new DialogComponentString(m_molFormat, "Molecule format:", false, 20));
 
     }
     

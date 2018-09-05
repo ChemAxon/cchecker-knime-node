@@ -48,12 +48,16 @@ public class OptionsTabFields {
     
     public static final String DETAILED_CHECK = "Detailed";
     
+	public static final String CFGKEY_MOL_FORMAT = "Molecule format";
+    
     private final SettingsModelString m_checkMode = new SettingsModelString(CFGKEY_CHECK_MODE, SIMPLE_CHECK);
     
     private final SettingsModelColumnName m_stucture = new SettingsModelColumnName(CFGKEY_STRUCTURE, "");
     
     private final SettingsModelDate m_date = new SettingsModelDateOfRegulations(CFGKEY_DATE_OF_REGULATIONS);
     
+    private final SettingsModelString m_molFormat = new SettingsModelString(CFGKEY_MOL_FORMAT, "");
+
     private final SettingsModelStringArray m_categories =
             new SettingsModelStringArray(CFGKEY_CATEGORIES, new String[0]);
 
@@ -84,11 +88,16 @@ public class OptionsTabFields {
         return Arrays.asList(m_categories.getStringArrayValue());
     }
     
+    public String getMolFormat() {
+    	return m_molFormat.getStringValue();
+    }
+    
     public void saveSettingsTo(NodeSettingsWO settings) {
         m_checkMode.saveSettingsTo(settings);
         m_date.saveSettingsTo(settings);
         m_stucture.saveSettingsTo(settings);
         m_categories.saveSettingsTo(settings);
+        m_molFormat.saveSettingsTo(settings);
     }
     
     public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
@@ -96,6 +105,7 @@ public class OptionsTabFields {
         m_date.loadSettingsFrom(settings);
         m_stucture.loadSettingsFrom(settings);
         m_categories.loadSettingsFrom(settings);
+        m_molFormat.loadSettingsFrom(settings);
     }
     
     public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
@@ -103,5 +113,6 @@ public class OptionsTabFields {
         m_date.validateSettings(settings);        
         m_stucture.validateSettings(settings);
         m_categories.validateSettings(settings);
+        m_molFormat.validateSettings(settings);
     }
 }

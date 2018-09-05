@@ -124,6 +124,7 @@ public class ComplianceCheckerNodeModel extends NodeModel {
         CheckListRequest checkListRequest = new CheckListRequest();
         checkListRequest.setDate(optionFields.getDateOfRegulationsStr());
         checkListRequest.setCategories(categoryHelper.convertCategoryNamesToIds(optionFields.getCategories()));
+        checkListRequest.setMolFormat(optionFields.getMolFormat());
         inputTableChunk.stream()
             .map(row -> row.getCell(structureColIndex).toString())
             .collect(checkListRequest::getInput, Collection::add, Collection::addAll);

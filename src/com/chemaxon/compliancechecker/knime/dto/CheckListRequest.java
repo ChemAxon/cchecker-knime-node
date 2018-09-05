@@ -26,6 +26,7 @@ public class CheckListRequest {
     private List<String> input;
     private String date;
     private List<String> categories;
+    private String molFormat;
 
     public List<String> getInput() {
         if (input == null) {
@@ -51,10 +52,15 @@ public class CheckListRequest {
     public void setCategories(List<String> categories) {
         this.categories = categories;
     }
-
-    @Override
+    public String getMolFormat() {
+		return molFormat;
+	}
+	public void setMolFormat(String molFormat) {
+		this.molFormat = molFormat;
+	}
+	@Override
     public String toString() {
-        return "CheckListRequest [input=" + input + ", date=" + date + ", categories=" + categories + "]";
+        return "CheckListRequest [input=" + input + ", date=" + date + ", categories=" + categories + ", molFormat=" + molFormat + "]";
     }
 }
 

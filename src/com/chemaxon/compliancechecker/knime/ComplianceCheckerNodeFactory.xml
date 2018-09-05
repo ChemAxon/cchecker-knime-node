@@ -17,6 +17,7 @@
         	<option name="Structure column">The column of the input DataTable that holds the structures to be checked.</option>
         	<option name="Date of regulation">Setting this date will execute the checks against the regulations that were active on the chosen date. Not setting the field is equivalent with setting today's date.</option>
         	<option name="Categories">The check will run against the selected categories. No selection means, running checks against all categories.</option>
+        	<option name="Structure format">The format of the input structures. If no format is specified Compliance Checker will will try to recognize the format.</option>
         </tab>
         <tab name="Connection settings">
         	<option name="Host">The host machine for ComplianceChecker.</option>
