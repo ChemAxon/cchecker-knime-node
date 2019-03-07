@@ -20,5 +20,5 @@
 package com.chemaxon.compliancechecker.knime.types;
 
 public enum CategoryDisplayType {
-    NOT_SHOWN, COUNTRY, USER_DEFINED;
+    NOT_SHOWN, COUNTRY, USER_DEFINED, INTERNATIONAL;
 }
