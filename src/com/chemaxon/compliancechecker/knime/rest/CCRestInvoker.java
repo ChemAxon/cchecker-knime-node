@@ -28,6 +28,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.StatusType;
 
 import com.chemaxon.compliancechecker.knime.ssl.CcTrustManager;
 import com.chemaxon.compliancechecker.knime.ssl.SSLContextException;
@@ -109,8 +110,9 @@ public class CCRestInvoker {
                 .post(ClientResponse.class, requestJson);
         
         if (clientResponse.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                 + clientResponse.getStatus());
+        	StatusType status = clientResponse.getStatusInfo();
+            throw new RuntimeException("Failed: HTTP error code: "
+                 + status.getStatusCode() + " Reason: " + status.getReasonPhrase());
         }
         
         String responseJson = clientResponse.getEntity(String.class);
