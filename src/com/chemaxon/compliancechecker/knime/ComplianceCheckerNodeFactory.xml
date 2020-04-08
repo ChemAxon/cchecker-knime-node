@@ -20,7 +20,7 @@
         	<option name="Structure format">The format of the input structures. If no format is specified Compliance Checker will will try to recognize the format.</option>
         </tab>
         <tab name="Connection settings">
-        	<option name="Host">The host machine for ComplianceChecker. (e.g: http://&lt;host&gt;:&lt;port&gt;)</option>
+        	<option name="Host">The host machine for ComplianceChecker's cc-api service. (e.g: http://&lt;host&gt;:&lt;port&gt;)</option>
         	<option name="Timeout">Sets read and connection timeout for the checks.</option>
         	<option name="Username">Name of the user to authenticate against on the service calls.</option>
         	<option name="Password">Password to authenticate against on the service calls.</option>

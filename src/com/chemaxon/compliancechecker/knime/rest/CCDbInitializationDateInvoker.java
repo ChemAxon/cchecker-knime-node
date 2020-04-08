@@ -21,7 +21,7 @@ package com.chemaxon.compliancechecker.knime.rest;
 
 public class CCDbInitializationDateInvoker {
     
-    private static final String URL_PATH = "/cc-bigdata/info/db-initialization-date";
+    private static final String URL_PATH = "/cc-api/db-initialization-date/";
     
     private final CCRestInvoker ccRestInvoker;
     

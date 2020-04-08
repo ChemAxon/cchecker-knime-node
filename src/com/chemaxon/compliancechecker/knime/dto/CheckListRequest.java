@@ -23,34 +23,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CheckListRequest {
-    private List<String> input;
-    private String date;
-    private List<String> categories;
+    private List<String> inputs;
+    private String dateOfRegulations;
+    private List<String> categoryGroupIds;
     private String molFormat;
 
-    public List<String> getInput() {
-        if (input == null) {
-            input = new ArrayList<>();
+    public List<String> getInputs() {
+        if (inputs == null) {
+            inputs = new ArrayList<>();
         }
-        return input;
+        return inputs;
     }
-    public void setInput(List<String> input) {
-        this.input = input;
+    public String getDateOfRegulations() {
+        return dateOfRegulations;
     }
-    public String getDate() {
-        return date;
+    public void setDateOfRegulations(String dateOfRegulations) {
+        this.dateOfRegulations = dateOfRegulations;
     }
-    public void setDate(String date) {
-        this.date = date;
-    }
-    public List<String> getCategories() {
-        if (categories == null) {
-            categories = new ArrayList<>();
+    public List<String> getCategoryGroupIds() {
+        if (categoryGroupIds == null) {
+            categoryGroupIds = new ArrayList<>();
         }
-        return categories;
+        return categoryGroupIds;
     }
-    public void setCategories(List<String> categories) {
-        this.categories = categories;
+    public void setCategoryGroupIds(List<String> categoryGroupIds) {
+        this.categoryGroupIds = categoryGroupIds;
     }
     public String getMolFormat() {
 		return molFormat;
@@ -60,7 +57,7 @@ public class CheckListRequest {
 	}
 	@Override
     public String toString() {
-        return "CheckListRequest [input=" + input + ", date=" + date + ", categories=" + categories + ", molFormat=" + molFormat + "]";
+        return "CheckListRequest [inputs=" + inputs + ", dateOfRegulations=" + dateOfRegulations + ", categoryGroupIds=" + categoryGroupIds + ", molFormat=" + molFormat + "]";
     }
 }
 

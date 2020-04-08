@@ -23,12 +23,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.chemaxon.compliancechecker.knime.dto.Category;
-import com.chemaxon.compliancechecker.knime.types.CategoryDisplayType;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 public class CCCategoryInvoker {
 
-    private static final String URL_PATH = "/cc-bigdata/integration/categories/simple";
+    private static final String URL_PATH = "/cc-api/all-category-groups/";
     
     private final CCRestInvoker ccRestInvoker;
     
@@ -42,7 +41,6 @@ public class CCCategoryInvoker {
     
     public List<String> getDisplayableCategoryNames() {
         return getCategories().stream()
-                .filter(category -> category.getCategoryDisplayType() != CategoryDisplayType.NOT_SHOWN)
                 .map(category -> category.getName())
                 .collect(Collectors.toList());
     }

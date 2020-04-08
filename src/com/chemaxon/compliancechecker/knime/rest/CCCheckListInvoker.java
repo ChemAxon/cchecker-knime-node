@@ -29,7 +29,7 @@ import com.chemaxon.compliancechecker.knime.types.CheckResultType;
 
 public class CCCheckListInvoker {
     
-    private static final String URL_PATH = "/cc-bigdata/integration/check/list";
+    private static final String URL_PATH = "/cc-api/check-list/";
     
     private final CCRestInvoker ccRestInvoker;
     

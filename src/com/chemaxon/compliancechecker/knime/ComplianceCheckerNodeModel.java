@@ -122,12 +122,12 @@ public class ComplianceCheckerNodeModel extends NodeModel {
     private CheckListRequest createCheckListRequest(List<DataRow> inputTableChunk, int structureColIndex,
             CategoryHelper categoryHelper) {
         CheckListRequest checkListRequest = new CheckListRequest();
-        checkListRequest.setDate(optionFields.getDateOfRegulationsStr());
-        checkListRequest.setCategories(categoryHelper.convertCategoryNamesToIds(optionFields.getCategories()));
+        checkListRequest.setDateOfRegulations(optionFields.getDateOfRegulationsStr());
+        checkListRequest.setCategoryGroupIds(categoryHelper.convertCategoryNamesToIds(optionFields.getCategories()));
         checkListRequest.setMolFormat(optionFields.getMolFormat());
         inputTableChunk.stream()
             .map(row -> row.getCell(structureColIndex).toString())
-            .collect(checkListRequest::getInput, Collection::add, Collection::addAll);
+            .collect(checkListRequest::getInputs, Collection::add, Collection::addAll);
         return checkListRequest;
     }
     
