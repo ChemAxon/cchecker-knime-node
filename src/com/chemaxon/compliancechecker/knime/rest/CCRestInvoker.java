@@ -20,28 +20,17 @@
 package com.chemaxon.compliancechecker.knime.rest;
 
 import java.io.IOException;
-import java.net.Authenticator;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.StatusType;
-
-import com.chemaxon.compliancechecker.knime.ssl.CcTrustManager;
-import com.chemaxon.compliancechecker.knime.ssl.SSLContextException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
+import com.google.common.io.ByteSource;
  
 public class CCRestInvoker {
     
@@ -54,43 +43,41 @@ public class CCRestInvoker {
     }
 
     private final RestConnectionDetails connectionDetails;
-    private final String urlPath;
+    private final String urlStr;
     
     public CCRestInvoker(RestConnectionDetails connectionDetails, String urlPath) {
         this.connectionDetails = connectionDetails;
-        this.urlPath = urlPath;
+        this.urlStr = connectionDetails.getHost() + urlPath;
     }
     
-    public <T> T get(Class<T> responseClass) {
-        WebResource webResource = createWebResource();
-        
-        ClientResponse clientResponse = webResource
-                .accept(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN)
-                .get(ClientResponse.class);
-        
-        if (clientResponse.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                 + clientResponse.getStatus());
-        }
-        String responseJson = clientResponse.getEntity(String.class);
-        
-        return mapResponse(responseJson, responseClass);
+	public <T> T get(Class<T> responseClass) {
+		HttpURLConnection connection = null;
+		try {
+			connection = getConnection();
+			String responseJson = getJsonResponse(connection);
+			return mapResponse(responseJson, responseClass);
+		} catch (IOException e) {
+			throw new CcInvocationException("Request failed. URL: " + urlStr, e);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();	
+			}
+		}
     }
     
     public <T> T get(TypeReference<T> type) {
-        WebResource webResource = createWebResource();
-        
-        ClientResponse clientResponse = webResource
-                .accept(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN)
-                .get(ClientResponse.class);
-        
-        if (clientResponse.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                 + clientResponse.getStatus());
-        }
-        String responseJson = clientResponse.getEntity(String.class);
-        
-        return mapResponse(responseJson, type);
+		HttpURLConnection connection = null;
+		try {
+			connection = getConnection();
+			String responseJson = getJsonResponse(connection);
+		    return mapResponse(responseJson, type);
+		} catch (IOException e) {
+			throw new CcInvocationException("Request failed. URL: " + urlStr, e);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();	
+			}
+		}
     }
 
     public <T> T post(Object request, Class<T> responseClass) {
@@ -102,22 +89,62 @@ public class CCRestInvoker {
             throw new RuntimeException("Failed to write object to json: " + request, e);
         }
 
-        WebResource webResource = createWebResource();
-        
-        ClientResponse clientResponse = webResource
-                .type(MediaType.APPLICATION_JSON_TYPE)
-                .accept(MediaType.APPLICATION_JSON)
-                .post(ClientResponse.class, requestJson);
-        
-        if (clientResponse.getStatus() != 200) {
-        	StatusType status = clientResponse.getStatusInfo();
-            throw new RuntimeException("Failed: HTTP error code: "
-                 + status.getStatusCode() + " Reason: " + status.getReasonPhrase());
-        }
-        
-        String responseJson = clientResponse.getEntity(String.class);
-        
-        return mapResponse(responseJson, responseClass);
+        HttpURLConnection connection = null;
+        try {
+			connection = getConnection();
+			connection.setDoOutput(true);
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestProperty("Accept", "application/json");
+			
+			try (OutputStream os = connection.getOutputStream()) {
+				os.write(requestJson.getBytes());
+				os.flush();
+			}
+		    String responseJson = getJsonResponse(connection);
+			return mapResponse(responseJson, responseClass);			
+		} catch (IOException e) {
+			throw new CcInvocationException("Request failed. URL: " + urlStr, e);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();	
+			}
+		}
+    }
+    
+    private HttpURLConnection getConnection() {
+    	HttpURLConnection connection;
+		try {
+			URL url = new URL(urlStr);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestProperty("Accept", "application/json,text/plain");
+			int timeout = connectionDetails.getTimeout();
+			connection.setConnectTimeout(timeout);
+			connection.setReadTimeout(timeout);
+			String auth = connectionDetails.getUsername() + ":" + connectionDetails.getPassword();
+			byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+			String authHeaderValue = "Basic " + new String(encodedAuth);
+			connection.setRequestProperty("Authorization", authHeaderValue);
+		} catch (IOException e) {
+			throw new CcInvocationException("Failed to set up connection. URL: " + urlStr, e);
+		}
+		return connection;
+    }
+    
+    private String getJsonResponse(HttpURLConnection connection) throws IOException {
+		int responseCode = connection.getResponseCode();
+		if (responseCode != HttpURLConnection.HTTP_OK) {
+			throw new CcInvocationException("Request failed. HTTP error code : " + responseCode +  " URL: " + urlStr);
+		}
+		try (InputStream inputStream = connection.getInputStream()) {
+		    ByteSource byteSource = new ByteSource() {
+		        @Override
+		        public InputStream openStream() throws IOException {
+		            return inputStream;
+		        }
+		    };
+		    return byteSource.asCharSource(StandardCharsets.UTF_8).read();
+		}
     }
     
     private <T> T mapResponse(String responseJson, Class<T> responseClass) {
@@ -138,35 +165,5 @@ public class CCRestInvoker {
             throw new RuntimeException("Failed to parse json: " + responseJson, e);
         }
         return response;
-    }
-
-    private WebResource createWebResource() {
-        Authenticator.setDefault(null);
-		Client client = getClient();
-        int timeout = connectionDetails.getTimeout();
-        client.addFilter(new HTTPBasicAuthFilter(connectionDetails.getUsername(), connectionDetails.getPassword()));
-        client.setConnectTimeout(timeout);
-        client.setReadTimeout(timeout);
-        return client.resource(connectionDetails.getHost() + urlPath);
-    }
-    
-    private Client getClient() {
-    	if (connectionDetails.getHost().startsWith("https://")) {
-    		return Client.create(getClientConfig());
-    	}
-    	return Client.create();
-    }
-    
-    private ClientConfig getClientConfig() {
-        ClientConfig config = new DefaultClientConfig();
-        try {
-			SSLContext ctx = SSLContext.getInstance("SSL");
-			ctx.init(null, new TrustManager[]{new CcTrustManager()}, null);
-	        HostnameVerifier hv = (urlHostname, sslSession) -> true;
-	        config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(hv, ctx));
-		} catch (NoSuchAlgorithmException | KeyManagementException e) {
-			throw new SSLContextException("Failed to create SSL Context", e);
-		}
-        return config;
     }
 }
