@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ComplianceChecker-Node extension for KNIME Workbench
 Bundle-SymbolicName: com.chemaxon.compliancechecker.knime; singleton:=true
-Bundle-Version: 1.3.0
+Bundle-Version: 1.3.1
 Bundle-ClassPath: compliancechecker.jar,
  lib/jackson-datatype-jsr310-2.8.7.jar,
  lib/guava-20.0.jar,
