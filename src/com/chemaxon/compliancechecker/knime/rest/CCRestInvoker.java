@@ -121,10 +121,14 @@ public class CCRestInvoker {
 			int timeout = connectionDetails.getTimeout();
 			connection.setConnectTimeout(timeout);
 			connection.setReadTimeout(timeout);
-			String auth = connectionDetails.getUsername() + ":" + connectionDetails.getPassword();
-			byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
-			String authHeaderValue = "Basic " + new String(encodedAuth);
-			connection.setRequestProperty("Authorization", authHeaderValue);
+			String username = connectionDetails.getUsername();
+			String password = connectionDetails.getPassword();
+			if (!(username.isEmpty() && password.isEmpty())) {
+				String auth = username + ":" + password;
+				byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+				String authHeaderValue = "Basic " + new String(encodedAuth);
+				connection.setRequestProperty("Authorization", authHeaderValue);
+			}
 		} catch (IOException e) {
 			throw new CcInvocationException("Failed to set up connection. URL: " + urlStr, e);
 		}

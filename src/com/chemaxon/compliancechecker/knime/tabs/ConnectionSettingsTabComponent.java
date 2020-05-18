@@ -62,7 +62,7 @@ public class ConnectionSettingsTabComponent implements RestConnectionDetails {
         pane.addDialogComponent(new DialogComponentNumber(m_timeout, "Timeout:", 1000, 5));
         
         pane.createNewGroup("Authentication");
-        pane.addDialogComponent(new DialogComponentString(m_username, "Username:", true, 30));
+        pane.addDialogComponent(new DialogComponentString(m_username, "Username:", false, 30));
         pane.addDialogComponent(new DialogComponentPasswordField(m_password, "Password:", 30));
         
         pane.closeCurrentGroup();
