@@ -19,7 +19,6 @@
 
 package com.chemaxon.compliancechecker.knime.dto;
 
-import java.time.Instant;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -28,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class CheckListResponse {
     
     private String categoryLabel;
-    private Instant checkTime;
     private String date;
     private String checkId;
     private List<List<SimpleResponse>> simpleResponses;
@@ -38,12 +36,6 @@ public class CheckListResponse {
     }
     public void setCategoryLabel(String categoryLabel) {
         this.categoryLabel = categoryLabel;
-    }
-    public Instant getCheckTime() {
-        return checkTime;
-    }
-    public void setCheckTime(Instant checkTime) {
-        this.checkTime = checkTime;
     }
     public String getDate() {
         return date;

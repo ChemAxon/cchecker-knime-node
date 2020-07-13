@@ -2,19 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ComplianceChecker-Node extension for KNIME Workbench
 Bundle-SymbolicName: com.chemaxon.compliancechecker.knime; singleton:=true
-Bundle-Version: 1.3.1
-Bundle-ClassPath: compliancechecker.jar,
- lib/jackson-datatype-jsr310-2.8.7.jar,
- lib/guava-20.0.jar,
- lib/jackson-annotations-2.7.0.jar,
- lib/jackson-core-2.7.2.jar,
- lib/jackson-databind-2.7.2.jar
+Bundle-Version: 1.3.2
+Bundle-ClassPath: compliancechecker.jar
 Bundle-Activator: com.chemaxon.compliancechecker.knime.ComplianceCheckerNodePlugin
 Bundle-Vendor: ChemAxon
 Require-Bundle: org.eclipse.core.runtime,
  org.knime.workbench.core,
  org.knime.workbench.repository,
- org.knime.base
+ org.knime.base,
+ com.fasterxml.jackson.core.jackson-annotations;bundle-version="[2.8.9,3.0.0)",
+ com.fasterxml.jackson.core.jackson-core;bundle-version="[2.8.9,3.0.0)",
+ com.fasterxml.jackson.core.jackson-databind;bundle-version="[2.8.9,3.0.0)",
+ com.google.guava;bundle-version="[19.0.0,24.0.0)"
 Bundle-ActivationPolicy: lazy
 Export-Package: com.chemaxon.compliancechecker.knime
 

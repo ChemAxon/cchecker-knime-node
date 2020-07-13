@@ -34,14 +34,8 @@ import com.google.common.io.ByteSource;
  
 public class CCRestInvoker {
     
-    private static final ObjectMapper mapper;
+    private static final ObjectMapper mapper = new ObjectMapper();
     
-    static {
-        mapper = new ObjectMapper();
-        // needed to be able to parse java8 objects (e.g: Instant)
-        mapper.findAndRegisterModules();
-    }
-
     private final RestConnectionDetails connectionDetails;
     private final String urlStr;
     
