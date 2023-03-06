@@ -1,8 +1,8 @@
 /*
- * Licensed to the ChemAxon Ltd. under one
+ * Licensed to the Chemaxon Ltd. under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  ChemAxon licenses this file
+ * regarding copyright ownership.  Chemaxon licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -31,8 +31,6 @@ import org.osgi.framework.BundleContext;
  * as this class is only needed by the eclipse platform/plugin mechanism.
  * If you want to move/rename this file, make sure to change the plugin.xml
  * file in the project root directory accordingly.
- *
- * @author ChemAxon
  */
 public class ComplianceCheckerNodePlugin extends Plugin {
     // The shared instance.
