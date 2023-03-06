@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.chemaxon.compliancechecker.knime; singleton:=true
 Bundle-Version: 1.3.2
 Bundle-ClassPath: compliancechecker.jar
 Bundle-Activator: com.chemaxon.compliancechecker.knime.ComplianceCheckerNodePlugin
-Bundle-Vendor: ChemAxon
+Bundle-Vendor: Chemaxon
 Require-Bundle: org.eclipse.core.runtime,
  org.knime.workbench.core,
  org.knime.workbench.repository,
