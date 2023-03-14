@@ -1,14 +1,14 @@
 /*
- * Licensed to the ChemAxon Ltd. under one
+ * Licensed to the Chemaxon Ltd. under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  ChemAxon licenses this file
+ * regarding copyright ownership.  Chemaxon licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -53,25 +53,22 @@ import com.google.common.collect.Iterators;
 
 /**
  * This is the model implementation of ComplianceChecker.
- * 
- *
- * @author ChemAxon
  */
 public class ComplianceCheckerNodeModel extends NodeModel {
-    
+
     private static final int DATA_CHUNK_SIZE = 20;
-    
+
     private final OptionsTabFields optionFields;
-    
+
     private final ConnectionSettingsTabFields connectionFields;
-    
+
     /**
      * Constructor for the node model.
      */
     protected ComplianceCheckerNodeModel() {
         super(1, 3);
-        this.optionFields = new OptionsTabFields();
         this.connectionFields = new ConnectionSettingsTabFields();
+        this.optionFields = new OptionsTabFields(connectionFields);
     }
 
     /**
@@ -80,14 +77,14 @@ public class ComplianceCheckerNodeModel extends NodeModel {
     @Override
     protected BufferedDataTable[] execute(final BufferedDataTable[] inData,
             final ExecutionContext exec) throws Exception {
-        
+
         BufferedDataTable inputTable = inData[0];
-        
+
         Iterable<List<DataRow>> inputTableChunks = partitionInputTable(inputTable);
-        
+
         int structureColIndex = inputTable.getDataTableSpec().findColumnIndex(optionFields.getStructureColName());
         CategoryHelper categoryHelper = new CategoryHelper(connectionFields);
-        
+
         CheckResultProvider checkResultProvider =
                 new CheckResultProviderFactory(exec, inputTable.getDataTableSpec(), connectionFields)
                         .getProvider(optionFields.getCheckMode());
@@ -97,10 +94,10 @@ public class ComplianceCheckerNodeModel extends NodeModel {
             CheckListRequest checkListRequest =
                     createCheckListRequest(inputTableChunk, structureColIndex, categoryHelper);
             checkResultProvider.executeCheck(checkListRequest, inputTableChunk);
-            
+
             // check if the execution monitor was canceled
             exec.checkCanceled();
-            
+
             double checkedStructNum = DATA_CHUNK_SIZE * count++;
             double progress = checkedStructNum / inputTable.size();
             exec.setProgress(progress, "Number of checked structures: " + checkedStructNum);
@@ -112,13 +109,13 @@ public class ComplianceCheckerNodeModel extends NodeModel {
                 outputDataContainerMap.get(CheckResultType.NOT_CONTROLLED).getTable(),
                 outputDataContainerMap.get(CheckResultType.ERROR).getTable()};
     }
-    
+
     // creates iterable chunks from the inputTable
     private Iterable<List<DataRow>> partitionInputTable(BufferedDataTable inputTable) {
         CloseableRowIterator inputTableIterator = inputTable.iterator();
         return () -> Iterators.partition(inputTableIterator, DATA_CHUNK_SIZE);
     }
-    
+
     private CheckListRequest createCheckListRequest(List<DataRow> inputTableChunk, int structureColIndex,
             CategoryHelper categoryHelper) {
         CheckListRequest checkListRequest = new CheckListRequest();
@@ -130,7 +127,7 @@ public class ComplianceCheckerNodeModel extends NodeModel {
             .collect(checkListRequest::getInputs, Collection::add, Collection::addAll);
         return checkListRequest;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -163,14 +160,14 @@ public class ComplianceCheckerNodeModel extends NodeModel {
     }
 
     private void validateConnectionDetails() throws InvalidSettingsException {
-    	
+
         if (connectionFields.getHost().isEmpty()) {
-            throw new InvalidSettingsException("No connection settings are provided.");    
+            throw new InvalidSettingsException("No connection settings are provided.");
         }
 
-    	try {
-    	    // validate connection settings by invoking a service
-            new CCDbInitializationDateInvoker(connectionFields).getDbInitializationDate();  
+        try {
+            // validate connection settings by invoking a service
+            new CCDbInitializationDateInvoker(connectionFields).getDbInitializationDate();
         } catch (Exception e) {
             setWarningMessage("Failed to connect to Compliance Checker. "
                     + "Please check if connection settings are correct.");
@@ -203,7 +200,7 @@ public class ComplianceCheckerNodeModel extends NodeModel {
         connectionFields.validateSettings(settings);
         optionFields.validateSettings(settings);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -211,16 +208,16 @@ public class ComplianceCheckerNodeModel extends NodeModel {
     protected void loadInternals(final File internDir,
             final ExecutionMonitor exec) throws IOException,
             CanceledExecutionException {
-        
-        // TODO load internal data. 
+
+        // TODO load internal data.
         // Everything handed to output ports is loaded automatically (data
         // returned by the execute method, models loaded in loadModelContent,
-        // and user settings set through loadSettingsFrom - is all taken care 
+        // and user settings set through loadSettingsFrom - is all taken care
         // of). Load here only the other internals that need to be restored
         // (e.g. data used by the views).
 
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -228,11 +225,11 @@ public class ComplianceCheckerNodeModel extends NodeModel {
     protected void saveInternals(final File internDir,
             final ExecutionMonitor exec) throws IOException,
             CanceledExecutionException {
-       
-        // TODO save internal models. 
+
+        // TODO save internal models.
         // Everything written to output ports is saved automatically (data
         // returned by the execute method, models saved in the saveModelContent,
-        // and user settings saved through saveSettingsTo - is all taken care 
+        // and user settings saved through saveSettingsTo - is all taken care
         // of). Save here only the other internals that need to be preserved
         // (e.g. data used by the views).
 

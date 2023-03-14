@@ -1,14 +1,14 @@
 /*
- * Licensed to the ChemAxon Ltd. under one
+ * Licensed to the Chemaxon Ltd. under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  ChemAxon licenses this file
+ * regarding copyright ownership.  Chemaxon licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -28,44 +28,41 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.defaultnodesettings.SettingsModelDate;
 
 import com.chemaxon.compliancechecker.knime.rest.CCDbInitializationDateInvoker;
-import com.chemaxon.compliancechecker.knime.rest.ConnectionSettings;
+import com.chemaxon.compliancechecker.knime.rest.RestConnectionDetails;
 
 public class SettingsModelDateOfRegulations extends SettingsModelDate {
 
-    public SettingsModelDateOfRegulations(String configName) {
-        super(configName);
-    }
+    private RestConnectionDetails connectionDetails;
 
-    @Override
-    protected SettingsModelDate createClone() {
-        return super.createClone();
+    public SettingsModelDateOfRegulations(String configName, RestConnectionDetails connectionDetails) {
+        super(configName);
+        this.connectionDetails = connectionDetails;
     }
 
     @Override
     protected void validateSettingsForModel(final NodeSettingsRO settings) throws InvalidSettingsException {
         SettingsModelDate settingsModelDate = this.createCloneWithValidatedValue(settings);
-        // date is not selected  
+        // date is not selected
         if (settingsModelDate.getSelectedFields() < 1) {
             return;
         }
-        ConnectionSettings conectionSettings = new ConnectionSettings(settings);
         String minDateStr = null;
         try {
-            minDateStr = new CCDbInitializationDateInvoker(conectionSettings).getDbInitializationDate();    
+            minDateStr = new CCDbInitializationDateInvoker(connectionDetails).getDbInitializationDate();
         } catch (Exception e) {
             throw new InvalidSettingsException("Failed to connect to Compliance Checker. "
                     + "Please check if connection settings are correct.");
         }
-        
+
         Date minDate = null;
         try {
             minDate = new SimpleDateFormat("yyyyMMdd").parse(minDateStr);
         } catch (ParseException e) {
             throw new InvalidSettingsException("Invalid date format received form server.");
         }
-        
+
         Date dateOfRegulation = settingsModelDate.getDate();
-        
+
         minDateStr = new StringBuilder(minDateStr).insert(4, "-").insert(7, "-").toString();
         if (dateOfRegulation.before(minDate)) {
             throw new InvalidSettingsException("Date of regulation should not be before " + minDateStr);

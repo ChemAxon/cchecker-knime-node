@@ -19,21 +19,8 @@
 
 package com.chemaxon.compliancechecker.knime.rest;
 
-public interface RestConnectionDetails {
+public class InvalidAccessTokenException extends RuntimeException {
 
-    String getAuthType();
+    private static final long serialVersionUID = 1L;
 
-    String getHost();
-
-    int getTimeout();
-
-    String getUsername();
-    
-    String getPassword();
-
-    String getClientId();
-
-    String getClientSecret();
-
-    String getTokenUrl();
 }

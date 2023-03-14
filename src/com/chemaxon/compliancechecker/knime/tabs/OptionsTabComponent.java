@@ -1,8 +1,8 @@
 /*
- * Licensed to the ChemAxon Ltd. under one
+ * Licensed to the Chemaxon Ltd. under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  ChemAxon licenses this file
+ * regarding copyright ownership.  Chemaxon licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -58,9 +58,8 @@ public class OptionsTabComponent {
     private final SettingsModelColumnName m_structure =
             new SettingsModelColumnName(OptionsTabFields.CFGKEY_STRUCTURE, "");
     
-    private final SettingsModelDate m_date =
-            new SettingsModelDateOfRegulations(OptionsTabFields.CFGKEY_DATE_OF_REGULATIONS);
-    
+    private final SettingsModelDate m_date;
+            
     private final SettingsModelStringArray m_categories =
             new SettingsModelStringArray(OptionsTabFields.CFGKEY_CATEGORIES, new String[] {});
     
@@ -71,6 +70,7 @@ public class OptionsTabComponent {
     public OptionsTabComponent(DefaultNodeSettingsPane pane, RestConnectionDetails connectionDetails) {
         this.pane = pane;
         this.connectionDetails = connectionDetails;
+        this.m_date = new SettingsModelDateOfRegulations(OptionsTabFields.CFGKEY_DATE_OF_REGULATIONS, connectionDetails);
     }
     
     public void addDialogComponents() {

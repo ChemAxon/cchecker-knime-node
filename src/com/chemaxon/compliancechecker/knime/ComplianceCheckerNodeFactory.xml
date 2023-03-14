@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./logo.png" type="Other" xmlns="http://knime.org/node/v2.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>ComplianceChecker</name>
+    <name>Compliance Checker</name>
     
     <shortDescription>
         
     </shortDescription>
     
     <fullDescription>
-        <intro>This node checks all chemical structures provided in a given column of the input DataTable against ComplianceChecker's rule set.<br/>
+        <intro>This node checks all chemical structures provided in a given column of the input DataTable against Compliance Checker's rule set.<br/>
         Source code is available <a href="https://github.com/ChemAxon/cchecker-knime-node">here</a>.
         </intro>
         
         <!-- possibly more options that can also be grouped by tabs -->
         <tab name="Options">
-        	<option name="Check mode">In 'simple' mode input rows are directed to different output ports based on the result of the check. In 'detailed' mode additional info columns are added to the input rows directed to the output ports.</option>
-        	<option name="Structure column">The column of the input DataTable that holds the structures to be checked.</option>
-        	<option name="Date of regulation">Setting this date will execute the checks against the regulations that were active on the chosen date. Not setting the field is equivalent with setting today's date.</option>
-        	<option name="Categories">The check will run against the selected categories. No selection means, running checks against all categories.</option>
-        	<option name="Structure format">The format of the input structures. If no format is specified Compliance Checker will will try to recognize the format.</option>
+            <option name="Check mode">In 'simple' mode input rows are directed to different output ports based on the result of the check. In 'detailed' mode additional info columns are added to the input rows directed to the output ports.</option>
+            <option name="Structure column">The column of the input DataTable that holds the structures to be checked.</option>
+            <option name="Date of regulation">Setting this date will execute the checks against the regulations that were active on the chosen date. Not setting the field is equivalent with setting today's date.</option>
+            <option name="Categories">The check will run against the selected categories. No selection means, running checks against all categories.</option>
+            <option name="Structure format">The format of the input structures. If no format is specified Compliance Checker will will try to recognize the format.</option>
         </tab>
         <tab name="Connection settings">
-        	<option name="Host">The host machine for ComplianceChecker's cc-api service. (e.g: http://&lt;host&gt;:&lt;port&gt;)</option>
-        	<option name="Timeout">Sets read and connection timeout for the checks.</option>
-        	<option name="Username">Name of the user to authenticate against on the service calls.</option>
-        	<option name="Password">Password to authenticate against on the service calls.</option>
+            <option name="Authentication type">The type of authentication Compliance Checker integration endpoints use</option>
+            <option name="CC host">The host machine for Compliance Checker's cc-api service. (e.g: http://&lt;host&gt;:&lt;port&gt;)</option>
+            <option name="Timeout">Sets read and connection timeout for invoking Compliance Checker's endpoints.</option>
+            <option name="Token endpoint">The token endpoint used to retrieve access token. Should be set if 'OAuth2' authentication type is selected.</option>
+            <option name="Client id">Client id used to retrieve the access token. Should be set if 'OAuth2' authentication type is selected.</option>
+            <option name="Client secret">Client secret used to retrieve the access token. Should be set if 'OAuth2' authentication type is selected.</option>
+            <option name="Username">Name of the user to authenticate against on the service calls. Should be set if 'Basic' authentication type is selected.</option>
+            <option name="Password">Password to authenticate against on the service calls. Should be set if 'Basic' authentication type is selected.</option>
         </tab>
     </fullDescription>
     
