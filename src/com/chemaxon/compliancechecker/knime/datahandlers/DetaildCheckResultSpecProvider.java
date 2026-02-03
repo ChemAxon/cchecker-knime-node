@@ -48,7 +48,6 @@ public class DetaildCheckResultSpecProvider implements CheckResultSpecProvider {
     
     private void initControlledDataTableSpec() {
         DataColumnSpec[] colSpecs = new DataColumnSpec[] {
-                new DataColumnSpecCreator("cas", StringCell.TYPE).createSpec(),
                 new DataColumnSpecCreator("dea", StringCell.TYPE).createSpec(),
                 new DataColumnSpecCreator("example", StringCell.TYPE).createSpec(),
                 new DataColumnSpecCreator("category name", StringCell.TYPE).createSpec(),

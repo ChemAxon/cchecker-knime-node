@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SimpleResponse {
 
-    private List<String> casNumbers;
     private List<String> deaNumbers;
     private String example;
     private String categoryName;
@@ -36,12 +35,6 @@ public class SimpleResponse {
     private String errorMessage;
     private boolean error;
 
-    public List<String> getCasNumbers() {
-        return casNumbers;
-    }
-    public void setCasNumbers(List<String> casNumbers) {
-        this.casNumbers = casNumbers;
-    }
     public List<String> getDeaNumbers() {
         return deaNumbers;
     }

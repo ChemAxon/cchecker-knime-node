@@ -67,7 +67,6 @@ public class DetaildCheckResultProvider implements CheckResultProvider {
 
     private void initControlledDataContainer(ExecutionContext exec) {
         DataColumnSpec[] colSpecs = new DataColumnSpec[] {
-                new DataColumnSpecCreator("cas", StringCell.TYPE).createSpec(),
                 new DataColumnSpecCreator("dea", StringCell.TYPE).createSpec(),
                 new DataColumnSpecCreator("example", StringCell.TYPE).createSpec(),
                 new DataColumnSpecCreator("category name", StringCell.TYPE).createSpec(),
@@ -138,12 +137,10 @@ public class DetaildCheckResultProvider implements CheckResultProvider {
                     RowKey key = new RowKey("Row" + controlledDataContainer.size());
                     List<DataCell> dataCells = inputRow.stream().collect(Collectors.toList());
                     dataCells.add(
-                            new StringCell(simpleResponse.getCasNumbers().stream().collect(Collectors.joining(","))));
-                    dataCells.add(
                             new StringCell(simpleResponse.getDeaNumbers().stream().collect(Collectors.joining(","))));
                     dataCells.add(new StringCell(simpleResponse.getExample()));
                     dataCells.add(new StringCell(simpleResponse.getCategoryName()));
-                    dataCells.add(new StringCell(simpleResponse.getLegislativeLinks()));
+                    dataCells.add(new StringCell(simpleResponse.getLegislativeLinks() == null ? "" : simpleResponse.getLegislativeLinks()));
                     dataCells.add(new StringCell(simpleResponse.getMolName()));
                     DataRow outputRow = new DefaultRow(key, dataCells.toArray(new DataCell[0]));
                     controlledDataContainer.addRowToTable(outputRow);
